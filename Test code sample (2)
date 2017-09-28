@@ -1,0 +1,63 @@
+import java.io.IOException;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+
+
+	
+	import java.awt.BorderLayout;
+	import java.awt.Color;
+	import java.io.IOException;
+	import java.util.ArrayList;
+	import java.util.List;
+
+	import javax.swing.JFrame;
+	import javax.swing.JPanel;
+	import javax.swing.JTextArea;
+
+	import org.jsoup.Jsoup;
+	import org.jsoup.nodes.Document;
+	import org.jsoup.nodes.Element;
+	import org.jsoup.select.Elements;
+//SECOND CODE WRITTEN
+	public class SecondTest {
+
+		public static void main(String[] args) throws IOException {
+		
+			//Connection to website
+			Document doc = Jsoup.connect("https://coinmarketcap.com/").get();
+			
+			//Coin names
+			Elements name1 = doc.select("a[href=/currencies/bitcoin/]");
+			Elements name2 = doc.select("a[href=/currencies/ethereum/]");
+			
+			//Coin prices
+			Element price1 = doc.select("a[href=/currencies/bitcoin/#markets]").first();
+			Element price2 = doc.select("a[href=/currencies/ethereum/#markets]").first();
+			
+			//Conerting names and prices to strings for the JArea
+			String str = name1.text() + " - " + price1.text();
+			String str1 = name2.text() + " - " + price2.text();
+			
+			//GUI Elements
+			JFrame frame = new JFrame();
+			JPanel panel = new JPanel();
+			
+		    JTextArea area = new JTextArea(str +"\n" + str1);
+		
+			panel.setBackground(Color.DARK_GRAY);
+			panel.add(area);
+			
+			frame.getContentPane().add(BorderLayout.CENTER, panel);
+			frame.setVisible(true);
+			frame.setSize(500, 500);
+			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			
+		}
+
+	}
+
+	
