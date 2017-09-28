@@ -1,0 +1,72 @@
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+public class ListTest {
+
+	public static void main(String[] args) throws IOException {
+		
+		List<String> coinList = new ArrayList<>();
+		
+		//Connection to website
+		Document doc = Jsoup.connect("https://coinmarketcap.com/").get();
+		
+		//Retrieves websites title
+		 String title = doc.title();
+		 
+		//Adding all elements to a list, Creating a string builder and using a for loop to produce the content of the app
+		coinList.add(doc.select("a[href=/currencies/bitcoin/]").text() + "\t "+ doc.select("a[href=/currencies/bitcoin/#markets]").first().text() + "\n");
+		coinList.add(doc.select("a[href=/currencies/ethereum/]").text() +"\t "+ doc.select("a[href=/currencies/ethereum/#markets]").first().text() + "\n");
+		coinList.add(doc.select("a[href=/currencies/bitcoin-cash/]").text() +"\t "+ doc.select("a[href=/currencies/bitcoin-cash/#markets]").first().text() + "\n");
+		coinList.add(doc.select("a[href=/currencies/ripple/]").text() +"\t "+ doc.select("a[href=/currencies/ripple/#markets]").first().text() + "\n");
+		coinList.add(doc.select("a[href=/currencies/litecoin/]").text() +"\t "+ doc.select("a[href=/currencies/litecoin/#markets]").first().text() + "\n");
+		coinList.add(doc.select("a[href=/currencies/dash/]").text() +"\t "+ doc.select("a[href=/currencies/dash/#markets]").first().text() + "\n");
+		coinList.add(doc.select("a[href=/currencies/nem/]").text() +"\t "+ doc.select("a[href=/currencies/nem/#markets]").first().text() + "\n");
+		coinList.add(doc.select("a[href=/currencies/iota/]").text() +"\t "+ doc.select("a[href=/currencies/neo/#markets]").first().text() + "\n");
+		coinList.add(doc.select("a[href=/currencies/neo/]").text() +"\t "+ doc.select("a[href=/currencies/iota/#markets]").first().text() + "\n");
+		coinList.add(doc.select("a[href=/currencies/monero/]").text() +"\t "+ doc.select("a[href=/currencies/monero/#markets]").first().text() + "\n");
+		
+		StringBuilder sbCoin = new StringBuilder();
+
+		for(String coins : coinList) {
+				
+			sbCoin.append(coins);
+		}
+		
+		String titles = "Coin Name" + "\t" + "Current Price (USD)" + "\n" +
+				"---------------------------" + "\n";										
+		
+		//GUI CLASS
+		JFrame frame = new JFrame();
+		JPanel panel = new JPanel();
+		JTextArea area = new JTextArea(titles + sbCoin.toString());
+		JButton refresh = new JButton("Refresh");
+		
+		area.setBackground(Color.LIGHT_GRAY);
+		
+		panel.setBackground(Color.LIGHT_GRAY);
+		panel.add(area);
+		panel.add(refresh);
+		
+		frame.getContentPane().add(BorderLayout.CENTER, panel);
+		frame.setVisible(true);
+		frame.setSize(250, 275);
+		frame.setTitle("Cryptocurrency Market Capitilizations");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+	}
+}
