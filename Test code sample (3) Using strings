@@ -1,0 +1,80 @@
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+//THIRD CODE WRITTEN
+public class StringTest {
+
+	public static void main(String[] args) throws IOException {
+
+		// WEBSITE INFO CLASS
+		//
+		// Connection to website
+		Document doc = Jsoup.connect("https://coinmarketcap.com/").get();
+
+		// Retrieves websites title
+		String title = doc.title();
+
+		// Coin names
+		Elements btcName = doc.select("a[href=/currencies/bitcoin/]");
+		Elements ethName = doc.select("a[href=/currencies/ethereum/]");
+		Elements bchName = doc.select("a[href=/currencies/bitcoin-cash/]");
+		Elements xrpName = doc.select("a[href=/currencies/ripple/]");
+		Elements ltcName = doc.select("a[href=/currencies/litecoin/]");
+		Elements dshName = doc.select("a[href=/currencies/dash/]");
+		Elements nemName = doc.select("a[href=/currencies/nem/]");
+		Elements neoName = doc.select("a[href=/currencies/neo/]");
+		Elements iotaName = doc.select("a[href=/currencies/iota/]");
+		Elements xrmName = doc.select("a[href=/currencies/monero/]");
+
+		// Coin prices
+		Element btcPrice = doc.select("a[href=/currencies/bitcoin/#markets]").first();
+		Element ethPrice = doc.select("a[href=/currencies/ethereum/#markets]").first();
+		Element bchPrice = doc.select("a[href=/currencies/bitcoin-cash/#markets]").first();
+		Element xrpPrice = doc.select("a[href=/currencies/ripple/#markets]").first();
+		Element ltcPrice = doc.select("a[href=/currencies/litecoin/#markets]").first();
+		Element dshPrice = doc.select("a[href=/currencies/dash/#markets]").first();
+		Element nemPrice = doc.select("a[href=/currencies/nem/#markets]").first();
+		Element neoPrice = doc.select("a[href=/currencies/neo/#markets]").first();
+		Element iotaPrice = doc.select("a[href=/currencies/iota/#markets]").first();
+		Element xrmPrice = doc.select("a[href=/currencies/monero/#markets]").first();
+
+		String titles = "Coin Name" + "\t" + "Current Price (USD)" + "\n" + "---------------------------" + "\n";
+		String content = btcName.text() + "\t" + btcPrice.text() + "\n" + ethName.text() + "\t" + ethPrice.text() + "\n"
+				+ bchName.text() + "\t" + bchPrice.text() + "\n" + xrpName.text() + "\t" + xrpPrice.text() + "\n"
+				+ ltcName.text() + "\t" + ltcPrice.text() + "\n" + dshName.text() + "\t" + dshPrice.text() + "\n"
+				+ nemName.text() + "\t" + nemPrice.text() + "\n" + iotaName.text() + "\t" + iotaPrice.text() + "\n"
+				+ neoName.text() + "\t" + neoPrice.text() + "\n" + xrmName.text() + "\t" + xrmPrice.text();
+
+		// GUI CLASS
+		JFrame frame = new JFrame();
+		JPanel panel = new JPanel();
+		JTextArea area = new JTextArea(titles + content);
+		JButton refresh = new JButton("Refresh");
+
+		area.setBackground(Color.LIGHT_GRAY);
+
+		panel.setBackground(Color.LIGHT_GRAY);
+		panel.add(area);
+		panel.add(refresh);
+
+		frame.getContentPane().add(BorderLayout.CENTER, panel);
+		frame.setVisible(true);
+		frame.setSize(300, 250);
+		frame.setTitle("Cryptocurrency Market Capitilizations");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+
+}
