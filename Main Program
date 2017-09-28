@@ -1,0 +1,135 @@
+//MAIN METHOD
+
+import java.io.IOException;
+
+public class Main {
+	public static void main(String[] args) {
+		Gui gui = new Gui();
+		try {
+			gui.gui();;
+		} catch (IOException e) {
+			System.out.println("Unable to deteect internet connection");
+		}
+	}
+}
+
+//------------------------------------------------------------------------------------------------------
+//WEBSITE CLASS CONNECTING TO THE SITE
+
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+
+public class Website {
+
+	public String getWebData() throws IOException {
+		// Creating the list that will hold all the lements download from the
+		// website
+		List<String> list = new ArrayList<String>();
+
+		// Connecting to the website to access the information
+		Document website = Jsoup.connect("https://coinmarketcap.com/").get();
+
+		// Scraping the website for the data we want
+		Elements coins = website.select("table[id=currencies]").select("td[class=no-wrap currency-name]");
+		Elements prices = website.select("table[id=currencies]").select("a[class=price]");
+		Elements marketCap = website.select("table[id=currencies]").select("td[class=no-wrap market-cap text-right]");
+
+		// Interating through the the sets of data assigning each piece to an
+		// element of our array
+		for (org.jsoup.nodes.Element coin : coins) {
+			list.add(coin.text() + "\t");
+		}
+		for (org.jsoup.nodes.Element price : prices) {
+			list.add(price.text() + "\t");
+		}
+		for (org.jsoup.nodes.Element cap : marketCap) {
+			list.add(cap.text());
+		}
+
+		// Creating a string builder to keep track of all the elements
+		StringBuilder sb = new StringBuilder();
+		String titles = "Coin Name     Current Price      Market Cap\n ------------------------------------- \n";
+		sb.append(titles);
+
+		// Creating the ints for the counters below
+		int count = 0;
+		int i = 0;
+		int y = 100;
+		int x = 200;
+
+		// Iterating through the Elements and connecting their prices to their
+		// names
+		while (count < 10) {
+			sb.append(list.get(i) + list.get(y) + list.get(x) + "\n");
+
+			i++;
+			x++;
+			y++;
+			count++;
+		}
+		// Returning the list of coins and their prices
+		return sb.toString();
+	}
+}
+
+
+//------------------------------------------------------------------------------------------------------
+//GUI CLASS
+
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+
+public class Gui {
+	JTextArea area;
+
+	Website site = new Website();
+
+	public void gui() throws IOException {
+		JFrame frame = new JFrame();
+		JPanel panel = new JPanel();
+		area = new JTextArea(site.getWebData());
+		JButton button = new JButton("Refresh");
+
+		button.addActionListener(new Refresh());
+
+		area.setEditable(false);
+		area.setBackground(Color.LIGHT_GRAY);
+
+		panel.setBackground(Color.LIGHT_GRAY);
+		panel.add(area);
+		panel.add(button);
+
+		frame.getContentPane().add(BorderLayout.CENTER, panel);
+		frame.setVisible(true);
+		frame.setSize(350, 275);
+		frame.setTitle("Cryptocurrency Market Top 10");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+
+	class Refresh implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			try {
+				area.setText(site.getWebData());
+				area.revalidate();
+				area.repaint();
+			} catch (IOException e1) {
+				System.out.println("Unable to connect to coinmarketcap.com");
+			}
+		}
+	}
+}
