@@ -1,0 +1,36 @@
+
+//FIRST TEST CODE WRITTEN
+import java.io.IOException;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+public class FirstTest {
+
+	public static void main(String[] args) throws IOException {
+		// Connecting to website
+		Document doc = Jsoup.connect("https://coinmarketcap.com/").get();
+
+		String title = doc.title();
+		System.out.println("Title: " + title);
+
+		// retrieves name from coinmarket cap
+		Elements name = doc.select("td[class=no-wrap currency-name]");
+
+		// retrieves prices from coinmarket cap
+		Elements price = doc.select("a[class=price]");
+
+		for (Element names : name) {
+			System.out.println(names.text());
+
+		}
+		System.out.println();
+		for (Element prices : price) {
+			System.out.println(prices.text());
+
+		}
+
+	}
+}
