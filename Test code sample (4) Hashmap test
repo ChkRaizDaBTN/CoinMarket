@@ -1,0 +1,128 @@
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
+class StringLengthCom implements Comparator<Integer> {
+
+	@Override
+	public int compare(Integer o1, Integer o2) {
+		int str1 = o1;
+		int str2 = o2;
+		
+		if(str1 < str2) {
+			return 1;
+		}
+		if(str1 > str2) {
+			return -1;
+		}
+		return 0;
+	}
+	
+}
+
+public class HashmapTest {
+	public static void main(String[] args) throws IOException {
+
+		// WEBSITE INFO CLASS
+		//
+		// Connection to website
+		Document doc = Jsoup.connect("https://coinmarketcap.com/").get();
+
+		// Retrieves websites title
+		String title = doc.title();
+
+		// Coin names
+		String btcName = doc.select("a[href=/currencies/bitcoin/]").text();
+		String ethName = doc.select("a[href=/currencies/ethereum/]").text();
+		String bchName = doc.select("a[href=/currencies/bitcoin-cash/]").text();
+		String xrpName = doc.select("a[href=/currencies/ripple/]").text();
+		String ltcName = doc.select("a[href=/currencies/litecoin/]").text();
+		String dshName = doc.select("a[href=/currencies/dash/]").text();
+		String nemName = doc.select("a[href=/currencies/nem/]").text();
+		String iotaName = doc.select("a[href=/currencies/iota/]").text();
+		String neoName = doc.select("a[href=/currencies/neo/]").text();
+		String xrmName = doc.select("a[href=/currencies/monero/]").text();
+
+		// Coin prices
+		String btcPrice = doc.select("a[href=/currencies/bitcoin/#markets]").first().text();
+		String ethPrice = doc.select("a[href=/currencies/ethereum/#markets]").first().text();
+		String bchPrice = doc.select("a[href=/currencies/bitcoin-cash/#markets]").first().text();
+		String xrpPrice = doc.select("a[href=/currencies/ripple/#markets]").first().text();
+		String ltcPrice = doc.select("a[href=/currencies/litecoin/#markets]").first().text();
+		String dshPrice = doc.select("a[href=/currencies/dash/#markets]").first().text();
+		String nemPrice = doc.select("a[href=/currencies/nem/#markets]").first().text();
+		String iotaPrice = doc.select("a[href=/currencies/iota/#markets]").first().text();
+		String neoPrice = doc.select("a[href=/currencies/neo/#markets]").first().text();
+		String xrmPrice = doc.select("a[href=/currencies/monero/#markets]").first().text();
+
+		// Cap totals
+		String btcCap = doc.select("tr[id=id-bitcoin]").select("td[class=no-wrap market-cap text-right]").text();
+		String ethCap = doc.select("tr[id=id-ethereum]").select("td[class=no-wrap market-cap text-right]").text();
+		String bchCap = doc.select("tr[id=id-bitcoin-cash]").select("td[class=no-wrap market-cap text-right]").text();
+		String xrpCap = doc.select("tr[id=id-ripple]").select("td[class=no-wrap market-cap text-right]").text();
+		String ltcCap = doc.select("tr[id=id-litecoin]").select("td[class=no-wrap market-cap text-right]").text();
+		String dshCap = doc.select("tr[id=id-dash]").select("td[class=no-wrap market-cap text-right]").text();
+		String nemCap = doc.select("tr[id=id-nem]").select("td[class=no-wrap market-cap text-right]").text();
+		String iotaCap = doc.select("tr[id=id-iota]").select("td[class=no-wrap market-cap text-right]").text();
+		String neoCap = doc.select("tr[id=id-neo]").select("td[class=no-wrap market-cap text-right]").text();
+		String xrmCap = doc.select("tr[id=id-monero]").select("td[class=no-wrap market-cap text-right]").text();
+
+		// Building a Hashmap and StringBuilder
+		Map<String, String> map = new HashMap<String, String>();
+
+		map.put(btcCap, btcName + "\t" + btcPrice + "\t");
+		map.put(ethCap, ethName + "\t" + ethPrice + "\t");
+		map.put(bchCap, bchName + "\t" + bchPrice + "\t");
+		map.put(xrpCap, xrpName + "\t" + xrpPrice + "\t");
+		map.put(ltcCap, ltcName + "\t" + ltcPrice + "\t");
+		map.put(dshCap, dshName + "\t" + dshPrice + "\t");
+		map.put(nemCap, nemName + "\t" + nemPrice + "\t");
+		map.put(iotaCap, iotaName + "\t" + iotaPrice + "\t");
+		map.put(neoCap, neoName + "\t" + neoPrice + "\t");
+		map.put(xrmCap, xrmName + "\t" + xrmPrice + "\t");
+
+		StringBuilder sbCoins = new StringBuilder();
+
+		for (Map.Entry<String, String> coin : map.entrySet()) {
+			String key = coin.getKey();
+			String value = coin.getValue();
+
+			sbCoins.append(value + key + "\n");
+			
+		}
+		
+		// GUI CLASS
+		JFrame frame = new JFrame();
+		JPanel panel = new JPanel();
+		JTextArea area = new JTextArea(sbCoins.toString());
+		JButton refresh = new JButton("Refresh");
+
+		area.setBackground(Color.LIGHT_GRAY);
+
+		panel.setBackground(Color.LIGHT_GRAY);
+		panel.add(area);
+		panel.add(refresh);
+
+		frame.getContentPane().add(BorderLayout.CENTER, panel);
+		frame.setVisible(true);
+		frame.setSize(325, 250);
+		frame.setTitle("Cryptocurrency Market Capitilizations");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+
+}
