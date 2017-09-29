@@ -3,12 +3,12 @@
 import java.io.IOException;
 
 public class Main {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		Gui gui = new Gui();
 		try {
 			gui.gui();;
 		} catch (IOException e) {
-			System.out.println("Unable to deteect internet connection");
+			gui.guiNoInternet();
 		}
 	}
 }
@@ -129,6 +129,45 @@ public class Gui {
 				area.repaint();
 			} catch (IOException e1) {
 				System.out.println("Unable to connect to coinmarketcap.com");
+			}
+		}
+	}
+	
+	//-----------------------------------------------------------------------------
+	//THE GUI THAT WILL RUN IF THE PROGRAM IS STARTED WITH NO INTERNET CONNECTION
+	
+	public void guiNoInternet() throws IOException {
+		JFrame frame = new JFrame();
+		JPanel panel = new JPanel();
+		area = new JTextArea("Unable to detect an internet connection");
+		JButton button = new JButton("Retry");
+
+		button.addActionListener(new Reconnect());
+
+		area.setEditable(false);
+		area.setBackground(Color.LIGHT_GRAY);
+
+		panel.setBackground(Color.LIGHT_GRAY);
+		panel.add(area);
+		panel.add(button);
+
+		frame.getContentPane().add(BorderLayout.CENTER, panel);
+		frame.setVisible(true);
+		frame.setSize(350, 275);
+		frame.setTitle("Cryptocurrency Market Top 10");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+
+	class Reconnect implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			try {
+				area.setText(site.getWebData());
+				area.revalidate();
+				area.repaint();
+			} catch (IOException e1) {
+				area.setText("Unable to detect an internet connection");
+				area.revalidate();
+				area.repaint();
 			}
 		}
 	}
